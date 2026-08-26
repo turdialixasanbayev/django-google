@@ -77,6 +77,16 @@
 
 <body>
 
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
     <div class="container">
         <div class="error-code">404</div>
         <h1>Page Not Found</h1>

@@ -1,16 +1,21 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+
+from django.contrib import messages
 
 from django.contrib.auth.decorators import login_required
 
 
-def index_view(request):
-    return render(request, 'index.html')
+def home_page(request):
+    return render(request, 'home.html')
 
 def login_page(request):
+    if request.user.is_authenticated:
+        messages.info(request, 'You are already logged in.')
+        return redirect('profile')
     return render(request, "login.html")
 
 @login_required
-def profile(request):
+def profile_page(request):
     social_account = request.user.socialaccount_set.get(
         provider="google"
     )
@@ -18,10 +23,10 @@ def profile(request):
     google_data = social_account.extra_data
 
     context = {
-        "name": google_data.get("name"),
-        "picture": google_data.get("picture"),
-        "given_name": google_data.get("given_name"),
-        "family_name": google_data.get("family_name"),
+        "name": google_data.get("name"), # full_name
+        "picture": google_data.get("picture"), # picture
+        "given_name": google_data.get("given_name"), # first_name
+        "family_name": google_data.get("family_name"), # last_name
     }
 
     return render(request, "profile.html", context)
